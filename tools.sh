@@ -30,7 +30,7 @@ go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
 
 # === Install Amass ===
 echo "[*] Installing amass..."
-sudo snap install amass
+go install -v github.com/owasp-amass/amass/v4/...@latest
 
 # === Install assetfinder ===
 echo "[*] Installing assetfinder..."
