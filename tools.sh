@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # === Update packages ===
 echo "[*] Updating system..."
