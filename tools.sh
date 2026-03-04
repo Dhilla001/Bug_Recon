@@ -1,53 +1,43 @@
 #!/bin/zsh
+set -e
 
-# === Update packages ===
 echo "[*] Updating system..."
 sudo apt update -y && sudo apt upgrade -y
 
-# === Install Go (Golang) ===
 echo "[*] Installing Go..."
 sudo apt install golang -y
 
-# === Set Go environment ===
-echo "[*] Setting Go path..."
-echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
-source ~/.bashrc
+# === Setup Go Path Properly for zsh ===
+GOPATH=$(go env GOPATH)
+GOBIN="$GOPATH/bin"
 
-# === Create Go bin folder if it doesn't exist ===
-mkdir -p "$(go env GOPATH)/bin"
+echo "[*] Configuring Go environment for zsh..."
 
-# === Install Subfinder ===
-echo "[*] Installing subfinder..."
+if ! grep -q "$GOBIN" ~/.zshrc; then
+    echo "" >> ~/.zshrc
+    echo "# Go Path" >> ~/.zshrc
+    echo "export PATH=\$PATH:$GOBIN" >> ~/.zshrc
+fi
+
+export PATH=$PATH:$GOBIN
+mkdir -p "$GOBIN"
+
+echo "[*] Installing recon tools..."
+
 go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-
-# === Install httpx ===
-echo "[*] Installing httpx..."
 go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
-
-# === Install dnsx ===
-echo "[*] Installing dnsx..."
 go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
-
-# === Install Amass ===
-echo "[*] Installing amass..."
 go install -v github.com/owasp-amass/amass/v4/...@latest
-
-# === Install assetfinder ===
-echo "[*] Installing assetfinder..."
 go install -v github.com/tomnomnom/assetfinder@latest
 
-# === Reload shell to reflect changes ===
-echo "[*] Reloading shell environment..."
-source ~/.bashrc
-
-# === Verify Installations ===
 echo
 echo "[✔] Installed tool versions:"
-echo -n "subfinder: "; subfinder -version 2>/dev/null
-echo -n "httpx: "; httpx -version 2>/dev/null
-echo -n "dnsx: "; dnsx -version 2>/dev/null
-echo -n "amass: "; amass -version 2>/dev/null
-echo -n "assetfinder: "; assetfinder -h | head -n 1
+echo -n "subfinder: "; subfinder -version 2>/dev/null || echo "Not found"
+echo -n "httpx: "; httpx -version 2>/dev/null || echo "Not found"
+echo -n "dnsx: "; dnsx -version 2>/dev/null || echo "Not found"
+echo -n "amass: "; amass -version 2>/dev/null || echo "Not found"
+echo -n "assetfinder: "; assetfinder -h 2>/dev/null | head -n 1 || echo "Not found"
 
 echo
-echo "[✅] All recon tools installed successfully!"
+echo "[✅] Recon environment setup complete!"
+echo "[ℹ] Restart your terminal or run: source ~/.zshrc"
