@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # === Function to check if required tools are installed ===
 check_command() {
