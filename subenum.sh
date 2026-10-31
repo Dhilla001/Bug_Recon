@@ -25,15 +25,15 @@ cd "$domain"
 
 echo "[+] Starting subdomain enumeration for: $domain"
 
-subfinder -d "$domain" -silent -all -o subfinder.txt || echo "[!] subfinder failed."
-assetfinder --subs-only "$domain" > assetfinder.txt || echo "[!] assetfinder failed."
-amass enum -passive -d "$domain" -o amass.txt || echo "[!] amass passive failed."
+subfinder -d "$domain" -silent -all -o subfinder.txt || echo "## subfinder failed."
+assetfinder --subs-only "$domain" > assetfinder.txt || echo "## assetfinder failed."
+amass enum -passive -d "$domain" -o amass.txt || echo "## amass passive failed."
 
 cat subfinder.txt assetfinder.txt amass.txt 2>/dev/null | sort -u > all_subs.txt
 
-dnsx -silent -a -resp -l all_subs.txt -o live_subs.txt || echo "[!] dnsx failed."
-httpx -silent -l live_subs.txt -o httpx.txt || echo "[!] httpx failed."
+dnsx -silent -a -l all_subs.txt -o live_subs.txt || echo "## dnsx failed."
+httpx -silent -l live_subs.txt -o httpx.txt || echo "## httpx failed."
 
-echo "[✅] Enumeration completed."
-echo "[📁] Results stored in: $(pwd)"
-echo "[📊] Total unique subdomains: $(wc -l < all_subs.txt)"
+echo "----Enumeration completed----"
+echo "----Results stored in: $(pwd)"
+echo "----Total unique subdomains: $(wc -l < all_subs.txt)"
